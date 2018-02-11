@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rock, Paper and Scissors!</title>
+  </head>
+  <body style="display:block;text-align:center; margin:auto; padding:50px;">
+
+    <div id="buttonArea">
+      <p>
+      <button type="button" id="ROCK">ROCK</button>
+      <button type="button" id="PAPER">PAPER</button>
+      <button type="button" id="SCISSOR">SCISSOR</button>
+      </p>
+    </div>
+
+    <center>
+      <p id="winner"></p>
+      <table style="margin:50px; text-align:center">
+        <tr>
+          <th>Your Choice</th>
+          <th>PC's Choice</th>
+        </tr>
+        <tr>
+          <td id="userChoiceTD">-</td>
+          <td id="pcChoiceTD">-</td>
+        </tr>
+        <tr>
+          <th>Your Score</th>
+          <th>PC's Score</th>
+        </tr>
+        <tr>
+          <td id="userScoreTD">0</td>
+          <td id="pcScoreTD">0</td>
+        </tr>
+      </table>
+    </center>
+
+    <script type="text/javascript">
+      const buttonArea = document.querySelector('#buttonArea');
+
+      const resetButton = document.createElement('button');
+      resetButton.textContent = 'RESET GAME';
+
+      resetButton.addEventListener('click',resetGame);
+
+      //Listen to submit
+      const buttons = Array.from(document.querySelectorAll('button'));
+      buttons.forEach(button => button.addEventListener('click',game));
+
+      //Init scores
+      let userScore = 0;
+      let pcScore = 0;
+
+      // Generate PC choice
+      function pcChoice() {
+        randomNumberGenerated = Math.floor(Math.random()*3)
+        switch (randomNumberGenerated) {
+          case 0:
+            return 'ROCK'
+            break;
+          case 1:
+            return 'PAPER'
+            break;
+          case 2:
+            return 'SCISSOR'
+            break;
+          default:
+           alert('Something went wrong!')
+        }
+      }
+
+      // Evaluate inputs and return winner
+      function computer_play(user,computer) {
+        if(user == computer) {
+          return 'DRAW'
+        }
+        if(user == 'ROCK' && computer == 'PAPER') {
+          return 'PC'
+        }
+        if(user == 'ROCK' && computer == 'SCISSOR') {
+          return 'USER'
+        }
+        if(user == 'PAPER' && computer == 'ROCK') {
+          return 'USER'
+        }
+        if(user == 'PAPER' && computer == 'SCISSOR') {
+          return 'PC'
+        }
+        if(user == 'SCISSOR' && computer == 'ROCK') {
+          return 'PC'
+        }
+        if(user == 'SCISSOR' && computer == 'PAPER') {
+          return 'USER'
+        }
+      }
+
+      // Call necessary functions and evaluate score
+      function game(e) {
+        //Save user's input into userChoiceLast variable
+        let userChoiceLast = e.target.id;
+
+        //Check if input is valid
+        if(userChoiceLast != 'ROCK' && userChoiceLast != 'PAPER' && userChoiceLast != 'SCISSOR' || userChoiceLast == '') {
+          alert('Invalid choice')
+          return;
+        }
+
+        //Generate computer's input
+        pcChoiceGenerated = pcChoice();
+
+        //Print inputs into table
+        document.getElementById('pcChoiceTD').textContent = pcChoiceGenerated;
+        document.getElementById('userChoiceTD').textContent = userChoiceLast;
+
+        //Call "play" function
+        winner = computer_play(userChoiceLast,pcChoiceGenerated)
+        console.log(winner)
+
+        //Add 1 point to the winner
+        switch(winner) {
+          case 'USER':
+            userScore++
+            break;
+          case 'PC':
+            pcScore++
+            break;
+        }
+
+        //Print winner
+        document.getElementById('winner').textContent = winner + " wins";
+
+        //Print new score
+        document.getElementById('userScoreTD').textContent = userScore;
+        document.getElementById('pcScoreTD').textContent = pcScore;
+
+        //check if there's a winner
+        if(userScore == 5 || pcScore == 5) {
+          alert(winner + ' won!!!')
+          buttons.forEach(button => button.disabled = true);
+          buttonArea.appendChild(resetButton);
+        }
+
+      }
+
+      function resetGame() {
+        userScore = 0;
+        pcScore = 0;
+        buttons.forEach(button => button.disabled = false);
+        buttonArea.removeChild(resetButton);
+        document.getElementById('userScoreTD').textContent = 0;
+        document.getElementById('pcScoreTD').textContent = 0;
+        document.getElementById('pcChoiceTD').textContent = '-';
+        document.getElementById('userChoiceTD').textContent = '-';
+      }
+    </script>
+  </body>
+</html>
